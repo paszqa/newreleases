@@ -5,6 +5,11 @@ import re
 
 
 
+###########################################################
+#
+# GET SITE, SAVE AS HTML, GENERATE SIMPLE CSV
+#
+###########################################################
 
 def saveCSV(siteurl,htmlname,csvname):
     ##Download website
@@ -34,7 +39,7 @@ def saveCSV(siteurl,htmlname,csvname):
     print (credits)
 
     csv = open(csvname,'w')
-    csv.write("Data;Nazwa;Platforma;Inne\n")
+    csv.write("Date;Name;Genre;Platform;Other\n")
     csv.write(credits)
     csv.close()
 
@@ -42,7 +47,78 @@ def saveCSV(siteurl,htmlname,csvname):
 saveCSV('https://www.gry-online.pl/daty-premier-gier.asp?PLA=1','new.html','new.csv')
 saveCSV('https://www.gry-online.pl/daty-premier-gier.asp?PLA=1&CZA=2','month.html','month.csv')
 saveCSV('https://www.gry-online.pl/daty-premier-gier.asp?PLA=1&CZA=3','6m.html','6m.csv')
-#with open("https://www.gry-online.pl/daty-premier-gier.asp?PLA=1") as fp:
-#    soup = BeautifulSoup(fp, 'lxml')
 
-#soup = BeautifulSoup("<html>a web page</html>", 'lxml')
+##############################################################
+#
+# GENERATE SHORT TRANSLATED FILE
+#
+##############################################################
+
+def translate(sourcecsv,outputcsv):
+    f = open(outputcsv,'w')
+    with open(sourcecsv) as file:
+        array = file.readlines()
+        for line in array[1:15]:
+            lineSplit = line.split(';')
+            # Date transform
+            dateSplit = lineSplit[0].split(' ')
+            dateFinal = ""
+            if len(dateSplit) > 1:
+                if len(dateSplit) > 2:
+                    dateFinal += dateSplit[0] + " ";
+
+                if "sty" in dateSplit[-2]:
+                    dateFinal += "Jan"
+                elif "lut" in dateSplit[-2]:
+                    dateFinal += "Feb"
+                elif "mar" in dateSplit[-2]:
+                    dateFinal += "Mar"
+                elif "kwi" in dateSplit[-2]:
+                    dateFinal += "Apr"
+                elif "maj" in dateSplit[-2]:
+                    dateFinal += "May"
+                elif "czer" in dateSplit[-2]:
+                    dateFinal += "Jun"
+                elif "lipi" in dateSplit[-2]:
+                    dateFinal += "Jul"
+                elif "sier" in dateSplit[-2]:
+                    dateFinal += "Aug"
+                elif "wrze" in dateSplit[-2]:
+                    dateFinal += "Sep"
+                elif "ernik" in dateSplit[-2]:
+                    dateFinal += "Oct"
+                elif "list" in dateSplit[-2]:
+                    dateFinal += "Nov"
+                elif "grud" in dateSplit[-2]:
+                    dateFinal += "Dec"
+                dateFinal += " "+dateSplit[-1]
+            else:
+                dateFinal = dateSplit[-1]
+            #
+            # Genre transform
+            genre = lineSplit[2];
+            if "Zrcz" in genre:
+                genre = "Action"
+            elif "Fabul" in genre:
+                genre = "RPG"
+            elif "Symu" in genre:
+                genre = "Sim"
+            elif "Wyci" in genre:
+                genre = "Racing"
+            elif "Akcj" in genre:
+                genre = "Action"
+            elif "Przyg" in genre:
+                genre = "Adventure"
+            elif "Strat" in genre:
+                genre = "Strategy"
+
+            # Write to file
+            f.write(dateFinal+";"+lineSplit[1]+";"+genre+"\n")
+            print(dateFinal+";"+lineSplit[1]+";"+genre)
+    print("=================================================")
+    f.close()
+translate('new.csv','new-eng.csv')
+translate('month.csv','month-eng.csv')
+translate('6m.csv','6m-eng.csv')
+
+
