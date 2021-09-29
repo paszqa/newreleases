@@ -36,6 +36,7 @@ def saveCSV(siteurl,htmlname,csvname):
     credits = re.sub(r'\n</p>\n','',credits)
     credits = re.sub(r'</p>','',credits)
     credits = re.sub(r'<p (.*)>','',credits)
+    credits = re.sub(r'\t','',credits)
     print (credits)
 
     csv = open(csvname,'w')
@@ -58,7 +59,7 @@ def translate(sourcecsv,outputcsv):
     f = open(outputcsv,'w')
     with open(sourcecsv) as file:
         array = file.readlines()
-        for line in array[1:15]:
+        for line in array[0:40]:
             lineSplit = line.split(';')
             # Date transform
             dateSplit = lineSplit[0].split(' ')
@@ -111,6 +112,8 @@ def translate(sourcecsv,outputcsv):
                 genre = "Adventure"
             elif "Strat" in genre:
                 genre = "Strategy"
+            elif "Sport" in genre:
+                genre = "Sports"
 
             # Write to file
             f.write(dateFinal+";"+lineSplit[1]+";"+genre+"\n")
