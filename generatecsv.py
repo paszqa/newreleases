@@ -37,6 +37,7 @@ def saveCSV(siteurl,htmlname,csvname):
     credits = re.sub(r'</p>','',credits)
     credits = re.sub(r'<p (.*)>','',credits)
     credits = re.sub(r'\t','',credits)
+    credits = re.sub(r'&amp;','&',credits) #fix ampersand
     print (credits)
 
     csv = open(csvname,'w')
@@ -114,6 +115,8 @@ def translate(sourcecsv,outputcsv):
                 genre = "Strategy"
             elif "Sport" in genre:
                 genre = "Sports"
+            elif "Logic" in genre:
+                genre = "Puzzle"
 
             # Write to file
             f.write(dateFinal+";"+lineSplit[1]+";"+genre+"\n")
